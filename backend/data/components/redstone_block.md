@@ -1,3 +1,12 @@
+---
+title: "Redstone Block"
+id: "redstone_block"
+namespace: "minecraft:redstone"
+properties: []
+---
+
+# Overview
+
 A block of redstone is a mineral block equivalent to nine redstone dust. It acts as a permanently powered redstone power source that can be pushed by pistons. 
 
 # Usage

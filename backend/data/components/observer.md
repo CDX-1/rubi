@@ -1,3 +1,12 @@
+---
+title: "Observer"
+id: "observer"
+namespace: "minecraft:observer"
+properties: [facing]
+---
+
+# Overview
+
 An observer is a block that emits a quick redstone pulse from its back when the block or fluid directly in front of its "face" experiences a change. 
 
 # Usage

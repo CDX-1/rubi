@@ -1,3 +1,12 @@
+---
+title: "Lever"
+id: "lever"
+namespace: "minecraft:lever"
+properties: [face, facing]
+---
+
+# Overview
+
 A lever is a non-solid block that can provide switchable redstone power. 
 
 # Usage

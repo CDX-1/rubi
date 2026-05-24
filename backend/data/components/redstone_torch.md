@@ -1,3 +1,15 @@
+---
+title: "Redstone Torch"
+id: "redstone_torch"
+namespace: "minecraft:redstone_torch"
+properties: []
+keynotes:
+    - "It should be noted that TWO different block ids can be used for the redstone torch (the redstone_torch AND the redstone_wall_torch. the redstone_torch has no properties and will automatically be fixed to the floor under it. The redstone_wall_torch has a 'facing' property that determines the direction it faces)."
+    - "The redstone torch does NOT have the 'face' property, when using the redstone_wall_torch it has the 'facing' property instead. Otherwise, it has no properties."
+---
+
+# Overview
+
 A redstone torch is a non-solid block that produces a full-strength redstone signal on all sides adjacent to it, except for its attached block, and can power the block directly above it. It deactivates while the block it is attached to is powered. 
 
 # Placement

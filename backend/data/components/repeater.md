@@ -1,3 +1,12 @@
+---
+title: "Repeater"
+id: "repeater"
+namespace: "minecraft:repeater"
+properties: [delay, facing]
+---
+
+# Overview
+
 A redstone repeater is a block that produces a full-strength output signal from its front when its back is powered, with four configurable delay settings. It can also be locked into a power state by its side being directly powered by a repeater or a comparator. 
 
 # Usage

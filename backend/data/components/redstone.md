@@ -1,3 +1,12 @@
+---
+title: "Redstone Wire"
+id: "redstone_wire"
+namespace: "minecraft:redstone_wire"
+properties: []
+---
+
+# Overview
+
 Redstone dust is a mineral that can transmit redstone power as a wire when placed as a block. It is also used in crafting and brewing.
 
 # Placement
