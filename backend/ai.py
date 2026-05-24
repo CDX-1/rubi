@@ -1,15 +1,24 @@
 import os
+from sre_parse import IN
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from pydantic import BaseModel, Field
+from schem import create_schem
+from schemas import MinecraftSchematic
+import frontmatter
 
 load_dotenv()
 
 client = genai.Client()
 
 DATA_DIR = "data"
-SYSTEM_INSTRUCTION = "You are a helpful assistant."
+INSTRUCTION_FILE = "instruction.md"
+if os.path.exists(INSTRUCTION_FILE):
+    with open(INSTRUCTION_FILE, "r") as f:
+        SYSTEM_INSTRUCTION = f.read().strip()
+else:
+    SYSTEM_INSTRUCTION = "You are a helpful assistant."
+
 DEFAULT_MODEL = "gemini-3.1-flash-lite"
 
 docs = []
@@ -19,9 +28,12 @@ for root, _, files in os.walk(DATA_DIR):
         if file.endswith(".md"):
             path = os.path.join(root, file)
             with open(path, "r", encoding="utf-8") as f:
+                post = frontmatter.load(f)
+                
                 docs.append({
                     "path": path,
-                    "content": f.read()
+                    "metadata": post.metadata,
+                    "content": post.content
                 })
 
 def score_doc(query, doc):
@@ -57,22 +69,31 @@ def build_context(query):
             reverse=True
         )[:2]
 
-        context_parts.append("\n\n".join(best_chunks))
+        body_context = "\n\n".join(best_chunks)
+        
+        meta = doc["metadata"]
+        title = meta.get("title", "Unknown Source")
+        block_id = meta.get("id", "N/A")
+        properties = meta.get("properties", [])
+        keynotes = meta.get("keynotes", [])
+
+        metadata_header = (
+            f"Source: {title}\n"
+            f"Block ID: {block_id}\n"
+            f"Properties: {properties}\n"
+        )
+
+        if keynotes:
+            metadata_header += "CRITICAL BLOCK RULES:\n" + "\n".join(f"- {note}" for note in keynotes) + "\n"
+
+        chunk_context = f"{metadata_header}\nContext Snippets:\n{body_context}"
+        context_parts.append(chunk_context)
 
     return "\n\n---\n\n".join(context_parts)
 
-class BlockPlacement(BaseModel):
-    x: int
-    y: int
-    z: int
-    block_type: str = Field(description="Minecraft block ID (ex: 'diamond_block' or 'air')")
-
-class MinecraftSchematic(BaseModel):
-    name: str
-    description: str
-    blocks: list[BlockPlacement]
-
 async def generate_schematic(prompt: str) -> MinecraftSchematic:
+    context = build_context(prompt)
+    print(context)
     response = client.models.generate_content(
         model=DEFAULT_MODEL,
         contents=prompt,
@@ -80,11 +101,12 @@ async def generate_schematic(prompt: str) -> MinecraftSchematic:
             system_instruction=f"""
             {SYSTEM_INSTRUCTION}
             Context:
-            {build_context(prompt)}
+            {context}
             """,
             response_mime_type="application/json",
             response_schema=MinecraftSchematic,
         ),
     )
 
+    create_schem(MinecraftSchematic.model_validate_json(response.text).blocks)
     return MinecraftSchematic.model_validate_json(response.text)
