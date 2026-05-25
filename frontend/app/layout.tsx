@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
 
@@ -52,6 +53,7 @@ export default function RootLayout({
                 >
                     <Navbar />
                     {children}
+                    <Toaster />
                 </ThemeProvider>
             </body>
         </html>
