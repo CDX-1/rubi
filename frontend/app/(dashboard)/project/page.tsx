@@ -1,6 +1,12 @@
+'use client';
+
+import ChatWindow from "@/components/chat";
+import { useRubi } from "@/components/rubi-provider";
 import TitleBlock from "@/components/title-block";
 
 export default function Project() {
+    const rubi = useRubi();
+    
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
 
@@ -16,8 +22,9 @@ export default function Project() {
                 }}
             />
 
-            {/* Title Block */}
-            <TitleBlock title="Unnamed Project" phase="Initial" />
+            <TitleBlock title={rubi.project} phase={rubi.phase} />
+
+            <ChatWindow messages={rubi.messages} sendChatMessage={rubi.sendChatMessage} isResponseLoading={rubi.isResponseLoading} />
         </div>
     );
 }

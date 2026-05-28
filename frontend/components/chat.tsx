@@ -1,100 +1,82 @@
-"use client";
-
-import { IconArrowUp, IconFile } from "@tabler/icons-react";
+import { IconArrowUp } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useState } from "react";
 
-type Message = {
-    isSender: boolean;
-    text: string;
-}
+export type Message = {
+    content: string;
+    side: "user" | "bot";
+};
 
-type Package = {
-    title: string;
-    description: string;
-}
-
-function ChatMessage({ isSender, text }: Message) {
+export function ChatMessage({ content, side }: Message) {
     return (
         <div
-            className={`max-w-[80%] border p-3 rounded-2xl ${isSender
-                ? "bg-primary text-primary-foreground border-transparent self-end rounded-tr-none"
-                : "bg-muted text-muted-foreground border-border self-start rounded-tl-none"
-                }`}
+            className={`flex items-center ${side === "user" ? "justify-end" : "justify-start"}`}
         >
-            <p className="text-sm">{text}</p>
+            <div
+                className={`rounded-xl px-4 py-3 ${side === "user" ? "bg-primary/80" : "bg-accent/80"}`}
+            >
+                <p>{content}</p>
+            </div>
         </div>
     );
 }
 
-function PackageMessage({ title, description }: Package) {
+export default function ChatWindow({
+    messages,
+    sendChatMessage,
+    isResponseLoading,
+    className,
+}: {
+    messages: Message[];
+    sendChatMessage: (content: string) => Promise<boolean>;
+    isResponseLoading: boolean;
+    className?: string;
+}) {
+    const [input, setInput] = useState("");
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!input.trim()) return;
+        const success = await sendChatMessage(input);
+        if (success) setInput("");
+    };
+
     return (
         <div
-            className="max-w-[80%] border p-3 rounded-2xl"
+            className={`absolute bg-background/80 min-w-2xl flex flex-col right-8 bottom-8 p-4 rounded-3xl ${className}`}
         >
-            <p className="text-xs font-mono">PACKAGE CREATED</p>
+            <div className="flex flex-col space-y-2 py-4">
+                {messages.map((message, index) => (
+                    <ChatMessage
+                        key={`${index}-${message.side}-${message.content}`}
+                        content={message.content}
+                        side={message.side}
+                    />
+                ))}
+            </div>
 
-            <div className="py-4">
-                <p className="font-semibold">{title}</p>
-                <p className="text-sm">{description}</p>
-
-                <div className="flex items-end space-x-1">
-                    <IconFile className="w-4 h-4" />
-                    <p className="pt-4 text-xs font-mono">circuit.schem</p>
+            {isResponseLoading && (
+                <div className="flex items-center space-x-2 w-full bg-accent/80 rounded-2xl px-2 py-2 my-2">
+                    <p>Loading...</p>
                 </div>
-            </div>
+            )}
 
-            <div className="flex space-x-2">
-                <Button variant="outline">
-                    Preview
+            <form
+                onSubmit={handleSubmit}
+                className="flex items-center space-x-2 w-full bg-accent/80 rounded-2xl px-2 py-2"
+            >
+                <Input
+                    className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent"
+                    placeholder="Make me a redstone signal inverter..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                />
+                
+                <Button type="submit" size="icon">
+                    <IconArrowUp />
                 </Button>
-
-                <Button variant="outline">
-                    Import
-                </Button>
-
-                <Button>
-                    Download Schematic
-                </Button>
-            </div>
-        </div>
-    );
-}
-
-export default function Chat({ className }: { className?: string }) {
-    const [messages, setMessages] = useState<(Message | Package)[]>([
-        { title: "Signal Inverter", description: "This circuit will invert a redstone signal" }
-    ]);
-
-    return (
-        <div
-            className={`w-full h-full bg-card border-l border-border p-4 pt-20 shadow-sm flex flex-col ${className}`}
-        >
-            <div className="flex flex-col space-y-2 items-start mb-auto w-full overflow-y-auto">
-                {messages.map((message, index) =>
-                    (message as Message)?.text ? (
-                        <ChatMessage
-                            key={index}
-                            isSender={(message as Message).isSender}
-                            text={(message as Message).text}
-                        />
-                    ) : (
-                        <PackageMessage
-                            key={index}
-                            title={(message as Package).title}
-                            description={(message as Package).description}
-                        />
-                    )
-                )}
-            </div>
-
-            <div className="flex space-x-2 mt-4">
-                <Input className="focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent px-4" placeholder="Build me a compact redstone clock..." />
-                <Button size="icon">
-                    <IconArrowUp className="h-8 w-8" />
-                </Button>
-            </div>
+            </form>
         </div>
     );
 }

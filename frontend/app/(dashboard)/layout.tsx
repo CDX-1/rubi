@@ -6,9 +6,9 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/app-sidebar";
+import { RubiProvider } from "@/components/rubi-provider";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
-
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
@@ -56,7 +56,9 @@ export default function RootLayout({
                         <AppSidebar />
                         <main className="w-full">
                             <SidebarTrigger className="absolute z-50" />
-                            {children}
+                            <RubiProvider>
+                                {children}
+                            </RubiProvider>
                             <Toaster />
                         </main>
                     </SidebarProvider>
