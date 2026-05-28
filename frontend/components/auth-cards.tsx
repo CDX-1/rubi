@@ -42,7 +42,7 @@ export function LoginCard({ className, onSignUp }: { className?: string; onSignU
 
         router.push("/");
         router.refresh();
-    }, [email, password, supabase]);
+    }, [email, password, supabase, router]);
 
     return (
         <Card className={`w-full ${className}`}>
@@ -91,7 +91,7 @@ export function LoginCard({ className, onSignUp }: { className?: string; onSignU
                 <Button type="submit" form="login-form" className="w-full" disabled={loading}>
                     Login
                 </Button>
-                <Button variant="outline" className="w-full" onClick={onSignUp} disabled={loading}>
+                <Button variant="ghost" className="w-full" onClick={onSignUp} disabled={loading}>
                     Create Account
                 </Button>
             </CardFooter>
@@ -132,7 +132,7 @@ export default function SignUpCard({ className, onLogin }: { className?: string,
 
         router.push("/");
         router.refresh();
-    }, [email, password, supabase]);
+    }, [email, password, supabase, router]);
 
     return (
         <Card className={`w-full ${className}`}>
@@ -175,7 +175,7 @@ export default function SignUpCard({ className, onLogin }: { className?: string,
                 <Button type="submit" form="signup-form" className="w-full" disabled={loading}>
                     Create Account
                 </Button>
-                <Button variant="outline" className="w-full" onClick={onLogin} disabled={loading}>
+                <Button variant="ghost" className="w-full" onClick={onLogin} disabled={loading}>
                     Already have an account?
                 </Button>
             </CardFooter>

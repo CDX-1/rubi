@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/app-sidebar";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
 
@@ -50,10 +52,14 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <main className="w-full">
-                        {children}
-                        <Toaster />
-                    </main>
+                    <SidebarProvider>
+                        <AppSidebar />
+                        <main className="w-full">
+                            <SidebarTrigger className="absolute z-50" />
+                            {children}
+                            <Toaster />
+                        </main>
+                    </SidebarProvider>
                 </ThemeProvider>
             </body>
         </html>
