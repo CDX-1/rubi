@@ -52,16 +52,16 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <SidebarProvider>
-                        <AppSidebar />
-                        <main className="w-full">
-                            <SidebarTrigger className="absolute z-50" />
-                            <RubiProvider>
+                    <RubiProvider>
+                        <SidebarProvider>
+                            <AppSidebar />
+                            <main className="w-full">
+                                <SidebarTrigger className="absolute z-50" />
                                 {children}
-                            </RubiProvider>
-                            <Toaster />
-                        </main>
-                    </SidebarProvider>
+                                <Toaster />
+                            </main>
+                        </SidebarProvider>
+                    </RubiProvider>
                 </ThemeProvider>
             </body>
         </html>

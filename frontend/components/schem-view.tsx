@@ -43,7 +43,7 @@ export default function SchemView({ className }: { className?: string }) {
         <div ref={containerRef} className={`w-full h-full relative ${className}`}>
             <canvas 
                 ref={canvasRef} 
-                className="w-full h-full block"
+                className="w-full h-full outline-none block"
             />
         </div>
     );

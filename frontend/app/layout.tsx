@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
+import { RubiProvider } from "@/components/rubi-provider";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
 

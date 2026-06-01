@@ -6,7 +6,9 @@ import {
     IconDiamond,
     IconDotsVertical,
     IconLibraryPhoto,
+    IconMoonFilled,
     IconPigMoney,
+    IconSunFilled,
     IconTrash,
     IconUserCircle,
 } from "@tabler/icons-react";
@@ -36,6 +38,8 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useTheme } from "next-themes";
+import { useCallback } from "react";
+import { useRubi } from "./rubi-provider";
 
 export default function AppSidebar() {
     return (
@@ -159,8 +163,14 @@ function SidebarChatGroup() {
 }
 
 function SidebarUserFooter() {
+    const rubi = useRubi();
     const { isMobile } = useSidebar();
     const { theme, setTheme } = useTheme();
+
+    const toggleTheme = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        setTheme(theme === "light" ? "dark" : "light");
+    }, [theme, setTheme]);
 
     return (
         <SidebarMenu>
@@ -179,7 +189,7 @@ function SidebarUserFooter() {
 
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    Username
+                                    {rubi.session?.user.name ?? "Not Logged In"}
                                 </span>
                                 <div className="flex items-center space-x-1 text-muted-foreground">
                                     <IconDiamond className="w-4 h-4" />
@@ -208,7 +218,7 @@ function SidebarUserFooter() {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        Username
+                                        {rubi.session?.user.name ?? "Not Logged In"}
                                     </span>
                                     <div className="flex items-center space-x-1 text-muted-foreground">
                                         <IconDiamond className="w-4 h-4" />
@@ -228,8 +238,8 @@ function SidebarUserFooter() {
                                 Account
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem>
-                                <IconUserCircle />
+                            <DropdownMenuItem onClick={toggleTheme}>
+                                {theme === "light" ? <IconSunFilled /> : <IconMoonFilled />}
                                 Dark Mode
                             </DropdownMenuItem>
                         </DropdownMenuGroup>

@@ -2,6 +2,7 @@
 
 import ChatWindow from "@/components/chat";
 import { useRubi } from "@/components/rubi-provider";
+import SchemView from "@/components/schem-view";
 import TitleBlock from "@/components/title-block";
 
 export default function Project() {
@@ -23,6 +24,8 @@ export default function Project() {
             />
 
             <TitleBlock title={rubi.project} phase={rubi.phase} />
+
+            <SchemView />
 
             <ChatWindow messages={rubi.messages} sendChatMessage={rubi.sendChatMessage} isResponseLoading={rubi.isResponseLoading} />
         </div>
