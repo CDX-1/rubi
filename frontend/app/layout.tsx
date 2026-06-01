@@ -4,10 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
-import { RubiProvider } from "@/components/rubi-provider";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
-
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
@@ -44,17 +42,15 @@ export default function RootLayout({
             )}
             suppressHydrationWarning
         >
-            <body className="w-full">
+            <body className="w-full h-full">
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <main className="w-full">
-                        {children}
-                        <Toaster />
-                    </main>
+                    {children}
+                    <Toaster />
                 </ThemeProvider>
             </body>
         </html>

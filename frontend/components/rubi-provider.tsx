@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Message } from "./chat";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 const supabase = createClient();
 
@@ -19,6 +20,7 @@ interface RubiSessionType {
         email: string;
         name: string;
     };
+    logout: () => Promise<void>;
 };
 
 interface RubiContextType {
@@ -48,6 +50,8 @@ interface RubiProviderProps {
 }
 
 export function RubiProvider({ children }: RubiProviderProps) {
+    const router = useRouter();
+    
     const [session, setSession] = useState<RubiSessionType | null>(null);
     const [project, setProject] = useState("Untitled Project");
     const [phase, setPhase] = useState("Initial");
@@ -56,6 +60,11 @@ export function RubiProvider({ children }: RubiProviderProps) {
 
     // load supabase client session
     useEffect(() => {
+        const logout = async () => {
+            await supabase.auth.signOut();
+            setSession(null);
+            router.push("/login");
+        };
 
         const getInitialSession = async () => {
             const { data: { session: supabasebaseSession } } = await supabase.auth.getSession();
@@ -66,7 +75,8 @@ export function RubiProvider({ children }: RubiProviderProps) {
                     user: {
                         email: supabasebaseSession.user.email ?? "Not Logged In",
                         name: supabasebaseSession.user.user_metadata?.name ?? undefined
-                    }
+                    },
+                    logout
                 });
             }
         }
@@ -81,7 +91,8 @@ export function RubiProvider({ children }: RubiProviderProps) {
                     user: {
                         email: supabaseSession.user.email ?? "Not Logged In",
                         name: supabaseSession.user.user_metadata?.name ?? undefined
-                    }
+                    },
+                    logout
                 });
             } else {
                 setSession(null);

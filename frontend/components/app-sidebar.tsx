@@ -6,6 +6,7 @@ import {
     IconDiamond,
     IconDotsVertical,
     IconLibraryPhoto,
+    IconLogout,
     IconMoonFilled,
     IconPigMoney,
     IconSunFilled,
@@ -241,6 +242,11 @@ function SidebarUserFooter() {
                             <DropdownMenuItem onClick={toggleTheme}>
                                 {theme === "light" ? <IconSunFilled /> : <IconMoonFilled />}
                                 Dark Mode
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem onClick={rubi.session?.logout}>
+                                <IconLogout />
+                                Logout
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>

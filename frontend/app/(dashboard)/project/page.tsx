@@ -23,7 +23,7 @@ export default function Project() {
                 }}
             />
 
-            <TitleBlock title={rubi.project} phase={rubi.phase} />
+            <TitleBlock title={null} phase={rubi.phase} />
 
             <SchemView />
 
