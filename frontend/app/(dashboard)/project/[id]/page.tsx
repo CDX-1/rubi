@@ -4,8 +4,10 @@ import ChatWindow from "@/components/chat";
 import { useRubi } from "@/components/rubi-provider";
 import SchemView from "@/components/schem-view";
 import TitleBlock from "@/components/title-block";
+import { use } from "react";
 
-export default function Project() {
+export default function Project({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const rubi = useRubi();
     
     return (
