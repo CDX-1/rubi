@@ -73,9 +73,7 @@ function SidebarTop() {
                 >
                     <a href="#">
                         <IconCircuitDiode className="size-5!" />
-                        <span className="text-base font-semibold">
-                            Rubi
-                        </span>
+                        <span className="text-base font-semibold">Rubi</span>
                     </a>
                 </SidebarMenuButton>
             </SidebarMenuItem>
@@ -168,10 +166,13 @@ function SidebarUserFooter() {
     const { isMobile } = useSidebar();
     const { theme, setTheme } = useTheme();
 
-    const toggleTheme = useCallback((e: React.MouseEvent) => {
-        e.preventDefault();
-        setTheme(theme === "light" ? "dark" : "light");
-    }, [theme, setTheme]);
+    const toggleTheme = useCallback(
+        (e: React.MouseEvent) => {
+            e.preventDefault();
+            setTheme(theme === "light" ? "dark" : "light");
+        },
+        [theme, setTheme],
+    );
 
     return (
         <SidebarMenu>
@@ -195,7 +196,8 @@ function SidebarUserFooter() {
                                 <div className="flex items-center space-x-1 text-muted-foreground">
                                     <IconDiamond className="w-4 h-4" />
                                     <span className="truncate text-xs">
-                                        0 Credits
+                                        {rubi.session?.user.credits ?? 0}{" "}
+                                        Credits
                                     </span>
                                 </div>
                             </div>
@@ -219,12 +221,14 @@ function SidebarUserFooter() {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        {rubi.session?.user.name ?? "Not Logged In"}
+                                        {rubi.session?.user.name ??
+                                            "Not Logged In"}
                                     </span>
                                     <div className="flex items-center space-x-1 text-muted-foreground">
                                         <IconDiamond className="w-4 h-4" />
                                         <span className="truncate text-xs">
-                                            0 Credits
+                                            {rubi.session?.user.credits ?? 0}{" "}
+                                            Credits
                                         </span>
                                     </div>
                                 </div>
@@ -240,7 +244,11 @@ function SidebarUserFooter() {
                             </DropdownMenuItem>
 
                             <DropdownMenuItem onClick={toggleTheme}>
-                                {theme === "light" ? <IconSunFilled /> : <IconMoonFilled />}
+                                {theme === "light" ? (
+                                    <IconSunFilled />
+                                ) : (
+                                    <IconMoonFilled />
+                                )}
                                 Dark Mode
                             </DropdownMenuItem>
 

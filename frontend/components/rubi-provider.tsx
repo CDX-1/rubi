@@ -19,6 +19,7 @@ interface RubiSessionType {
     user: {
         email: string;
         name: string;
+        credits: int;
     };
     logout: () => Promise<void>;
 };
@@ -66,15 +67,21 @@ export function RubiProvider({ children }: RubiProviderProps) {
             router.push("/login");
         };
 
-        const getInitialSession = async () => {
-            const { data: { session: supabasebaseSession } } = await supabase.auth.getSession();
+        const getCredits = async (id: string) => {
+            const { data } = await supabase.from('profiles').select('credits').eq('user_id', id).single();
+            return data?.credits;
+        };
 
-            if (supabasebaseSession) {
+        const getInitialSession = async () => {
+            const { data: { session: supabaseSession } } = await supabase.auth.getSession();
+
+            if (supabaseSession) {
                 setSession({
-                    id: supabasebaseSession.user.id,
+                    id: supabaseSession.user.id,
                     user: {
-                        email: supabasebaseSession.user.email ?? "Not Logged In",
-                        name: supabasebaseSession.user.user_metadata?.name ?? undefined
+                        email: supabaseSession.user.email ?? "Not Logged In",
+                        name: supabaseSession.user.user_metadata?.name ?? undefined,
+                        credits: await getCredits(supabaseSession.user.id)
                     },
                     logout
                 });
@@ -84,13 +91,14 @@ export function RubiProvider({ children }: RubiProviderProps) {
         getInitialSession();
 
         // listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, supabaseSession) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, supabaseSession) => {
             if (supabaseSession) {
                 setSession({
                     id: supabaseSession.user.id,
                     user: {
                         email: supabaseSession.user.email ?? "Not Logged In",
-                        name: supabaseSession.user.user_metadata?.name ?? undefined
+                        name: supabaseSession.user.user_metadata?.name ?? undefined,
+                        credits: await getCredits(supabaseSession.user.id)
                     },
                     logout
                 });
