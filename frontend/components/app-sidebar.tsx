@@ -89,7 +89,7 @@ function SidebarMainGroup() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild>
-                            <a href="#" className="flex items-center">
+                            <a href="/project/new" className="flex items-center">
                                 <IconCirclePlus className="w-6 h-6" />
                                 <span>New Project</span>
                             </a>

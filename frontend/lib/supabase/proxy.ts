@@ -43,7 +43,11 @@ export async function updateSession(request: NextRequest) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
         return NextResponse.redirect(url);
-    }
+    } else if (request.nextUrl.pathname === '/') {
+		const url = request.nextUrl.clone();
+		url.pathname = '/project/new';
+		return NextResponse.redirect(url);
+	}
 
     return supabaseResponse;
 }

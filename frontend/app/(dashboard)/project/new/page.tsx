@@ -2,12 +2,9 @@
 
 import ChatWindow from "@/components/chat";
 import { useRubi } from "@/components/rubi-provider";
-import SchemView from "@/components/schem-view";
 import TitleBlock from "@/components/title-block";
-import { use } from "react";
 
-export default function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function NewProjectPage() {
     const rubi = useRubi();
     
     return (
@@ -26,8 +23,6 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
             />
 
             <TitleBlock title={null} phase={rubi.phase} />
-
-            <SchemView />
 
             <ChatWindow messages={rubi.messages} sendChatMessage={rubi.sendChatMessage} isResponseLoading={rubi.isResponseLoading} />
         </div>
