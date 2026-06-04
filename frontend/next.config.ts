@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
                 source: "/api/minecraft-jar",
                 destination:
                     "https://piston-data.mojang.com/v1/objects/ba2df812c2d12e0219c489c4cd9a5e1f0760f5bd/client.jar",
-            },
+            }
         ];
     },
 };
