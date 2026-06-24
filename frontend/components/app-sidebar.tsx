@@ -191,7 +191,7 @@ function SidebarUserFooter() {
 
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {rubi.session?.user.name ?? "Not Logged In"}
+                                    {rubi.session?.user.name ?? "?"}
                                 </span>
                                 <div className="flex items-center space-x-1 text-muted-foreground">
                                     <IconDiamond className="w-4 h-4" />

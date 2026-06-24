@@ -111,22 +111,31 @@ export function SignUpCard({ className }: { className?: string }) {
 
     const handleSignUp = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+    
+        if (!displayName.trim()) {
+            toast("Missing Information", {
+                description: "Please enter a display name.",
+                duration: 3000,
+            });
+            return;
+        }
+    
         setLoading(true);
-
+    
         const { error } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
-                    display_name: displayName
+                    display_name: displayName.trim()
                 }
             }
         });
-
+    
         setLoading(false);
-
+    
         if (error) {
-            toast("Failed to login", {
+            toast("Failed to sign up", {
                 description: error.message,
                 duration: 3000,
             });
@@ -136,10 +145,10 @@ export function SignUpCard({ className }: { className?: string }) {
                 duration: 3000,
             });
         }
-
+    
         router.push("/");
         router.refresh();
-    }, [email, password, supabase, router]);
+    }, [displayName, email, password, supabase, router]);
 
     return (
         <Card className={`w-full ${className}`}>

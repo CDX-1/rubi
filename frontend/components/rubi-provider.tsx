@@ -111,6 +111,7 @@ export function RubiProvider({ children }: RubiProviderProps) {
                     user: {
                         email: supabaseSession.user.email ?? "Not Logged In",
                         name:
+                            supabaseSession.user.user_metadata?.display_name ??
                             supabaseSession.user.user_metadata?.name ??
                             undefined,
                         credits: await getCredits(supabaseSession.user.id),
