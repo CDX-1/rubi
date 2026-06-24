@@ -67,13 +67,13 @@ export default function ChatWindow({
                 className="flex items-center space-x-2 w-full bg-accent/80 rounded-2xl px-2 py-2"
             >
                 <Input
-                    className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent"
+                    className="bg-transparent! border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent outline-none"
                     placeholder="Make me a redstone signal inverter..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 />
-                
-                <Button type="submit" size="icon">
+
+                <Button type="submit" size="icon" className="rounded-xl">
                     <IconArrowUp />
                 </Button>
             </form>
