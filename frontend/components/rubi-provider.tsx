@@ -26,28 +26,20 @@ interface RubiSessionType {
 
 interface RubiContextType {
     session: RubiSessionType | null;
-
     createProject: (initialPrompt: string) => Promise<void>;
     loadProject: (id: string) => Promise<void>;
-
     project: string;
     setProject: React.Dispatch<React.SetStateAction<string>>;
-
     phase: string;
     setPhase: React.Dispatch<React.SetStateAction<string>>;
-
     messages: Message[];
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-
     isResponseLoading: boolean;
     setIsResponseLoading: React.Dispatch<React.SetStateAction<boolean>>;
-
     sendChatMessage: (content: string) => Promise<boolean>;
 }
 
-export const RubiContext = createContext<RubiContextType | undefined>(
-    undefined,
-);
+export const RubiContext = createContext<RubiContextType | undefined>(undefined);
 
 interface RubiProviderProps {
     children: ReactNode;
@@ -62,37 +54,35 @@ export function RubiProvider({ children }: RubiProviderProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isResponseLoading, setIsResponseLoading] = useState(false);
 
-    // load supabase client session
+    const logout = useCallback(async () => {
+        await supabase.auth.signOut();
+        setSession(null);
+        router.push("/login");
+    }, [router]);
+
+    const getCredits = useCallback(async (id: string) => {
+        const { data } = await supabase
+            .from("profiles")
+            .select("credits")
+            .eq("user_id", id)
+            .single();
+        return data?.credits;
+    }, []);
+
     useEffect(() => {
-        const logout = async () => {
-            await supabase.auth.signOut();
-            setSession(null);
-            router.push("/login");
-        };
-
-        const getCredits = async (id: string) => {
-            const { data } = await supabase
-                .from("profiles")
-                .select("credits")
-                .eq("user_id", id)
-                .single();
-            return data?.credits;
-        };
-
         const getInitialSession = async () => {
             const {
                 data: { session: supabaseSession },
             } = await supabase.auth.getSession();
 
             if (supabaseSession) {
+                const credits = await getCredits(supabaseSession.user.id);
                 setSession({
                     id: supabaseSession.user.id,
                     user: {
                         email: supabaseSession.user.email ?? "Not Logged In",
-                        name:
-                            supabaseSession.user.user_metadata?.name ??
-                            undefined,
-                        credits: await getCredits(supabaseSession.user.id),
+                        name: supabaseSession.user.user_metadata?.name ?? undefined,
+                        credits: credits ?? 0,
                     },
                     logout,
                 });
@@ -101,11 +91,11 @@ export function RubiProvider({ children }: RubiProviderProps) {
 
         getInitialSession();
 
-        // listen for auth changes
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (_event, supabaseSession) => {
             if (supabaseSession) {
+                const credits = await getCredits(supabaseSession.user.id);
                 setSession({
                     id: supabaseSession.user.id,
                     user: {
@@ -114,38 +104,29 @@ export function RubiProvider({ children }: RubiProviderProps) {
                             supabaseSession.user.user_metadata?.display_name ??
                             supabaseSession.user.user_metadata?.name ??
                             undefined,
-                        credits: await getCredits(supabaseSession.user.id),
+                        credits: credits ?? 0,
                     },
                     logout,
                 });
             } else {
                 setSession(null);
+                router.push("/login");
             }
         });
 
         return () => {
             subscription.unsubscribe();
         };
-    }, [router]);
+    }, [router, logout, getCredits]);
 
-    const createProject = useCallback(async (initialPrompt: string) => {
-        
+    const createProject = useCallback(async (initialPrompt: string) => {}, []);
+
+    const loadProject = useCallback(async (id: string) => {}, []);
+
+    const sendChatMessage = useCallback(async (content: string) => {
+        setMessages((prev) => [...prev, { content: content, side: "user" }]);
+        return true;
     }, []);
-
-    const loadProject = useCallback(async (id: string) => {
-        
-    }, []);
-
-    const sendChatMessage = useCallback(
-        async (content: string) => {
-            setMessages((prev) => [
-                ...prev,
-                { content: content, side: "user" },
-            ]);
-            return true;
-        },
-        [setMessages],
-    );
 
     return (
         <RubiContext.Provider
