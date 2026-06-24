@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
-const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -37,7 +37,7 @@ export default function RootLayout({
                 geistSans.variable,
                 geistMono.variable,
                 "font-sans",
-                notoSans.variable,
+                inter.variable,
                 geistHeading.variable,
             )}
             suppressHydrationWarning

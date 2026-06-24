@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export function LoginCard({ className, onSignUp }: { className?: string; onSignUp?: () => void }) {
+export function LoginCard({ className }: { className?: string }) {
     const supabase = createClient();
     const router = useRouter();
 
@@ -91,7 +91,7 @@ export function LoginCard({ className, onSignUp }: { className?: string; onSignU
                 <Button type="submit" form="login-form" className="w-full" disabled={loading}>
                     Login
                 </Button>
-                <Button variant="ghost" className="w-full" onClick={onSignUp} disabled={loading}>
+                <Button variant="ghost" className="w-full" onClick={() => router.push("/register")} disabled={loading}>
                     Create Account
                 </Button>
             </CardFooter>
@@ -99,12 +99,14 @@ export function LoginCard({ className, onSignUp }: { className?: string; onSignU
     );
 }
 
-export default function SignUpCard({ className, onLogin }: { className?: string, onLogin: () => void }) {
+export function SignUpCard({ className }: { className?: string }) {
     const supabase = createClient();
     const router = useRouter();
 
+    const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmedPassword, setConfirmedPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSignUp = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
@@ -114,6 +116,11 @@ export default function SignUpCard({ className, onLogin }: { className?: string,
         const { error } = await supabase.auth.signUp({
             email,
             password,
+            options: {
+                data: {
+                    display_name: displayName
+                }
+            }
         });
 
         setLoading(false);
@@ -144,29 +151,65 @@ export default function SignUpCard({ className, onLogin }: { className?: string,
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSignUp} id="signup-form">
-                    <div className="flex flex-col gap-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="email@example.com"
-                                required
-                                onChange={(e) => setEmail(e.target.value)}
-                                value={email}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label htmlFor="password">Password</Label>
+                    <div className="flex flex-col gap-8">
+                        <div className="flex flex-col gap-6">
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Display Name</Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    placeholder="Redstone Enthusiast"
+                                    required
+                                    onChange={(e) => setDisplayName(e.target.value)}
+                                    value={displayName}
+                                />
                             </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                required
-                                onChange={(e) => setPassword(e.target.value)}
-                                value={password}
-                            />
+                            <div className="grid gap-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="email@example.com"
+                                    required
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    This email will be used to contact you and will never be shared with another party.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-6">
+                            <div className="grid gap-2">
+                                <div className="flex items-center">
+                                    <Label htmlFor="password">Password</Label>
+                                </div>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={password}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Ensure your password is at least 8 characters long.
+                                </p>
+                            </div>
+                            <div className="grid gap-2">
+                                <div className="flex items-center">
+                                    <Label htmlFor="password">Confirm Password</Label>
+                                </div>
+                                <Input
+                                    id="confirmed-password"
+                                    type="password"
+                                    required
+                                    onChange={(e) => setConfirmedPassword(e.target.value)}
+                                    value={confirmedPassword}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Must match the password above.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -175,7 +218,7 @@ export default function SignUpCard({ className, onLogin }: { className?: string,
                 <Button type="submit" form="signup-form" className="w-full" disabled={loading}>
                     Create Account
                 </Button>
-                <Button variant="ghost" className="w-full" onClick={onLogin} disabled={loading}>
+                <Button variant="ghost" className="w-full" onClick={() => router.push("/login")} disabled={loading}>
                     Already have an account?
                 </Button>
             </CardFooter>
